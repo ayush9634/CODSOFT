@@ -1,21 +1,48 @@
 import tkinter as tk
-
-
-def calculate():
+def press(num):
+    global expression
+    expression = expression + str(num)
+    entry.delete(0, tk.END)
+    entry.insert(tk.END, expression)
+def equalpress():
     try:
-        expression = entry.get()
-        result = eval(expression)
-        output_label.config(text='Result'+str(result))
+        global expression
+        result = str(eval(expression))
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, result)
+        expression = ""
     except Exception as e:
-        output_label.config(text='Error:'+str(e))
-
-
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, "Error: " + str(e))
+        expression = ""
+def clear():
+    global expression
+    entry.delete(0, tk.END)
+    expression = ""
 window = tk.Tk()
-window.title("Arithmatic Calculator")
-entry = tk.Entry(window, width=30)
-entry.pack()
-calculate_button = tk.Button(window, text='Calculate', command=calculate)
-calculate_button.pack()
-output_label = tk.Label(window, text='')
-output_label.pack()
+window.title("CALCULATOR")
+window.color="lightblue"
+expression = ""
+entry = tk.Entry(window, font=("Arial", 20), width=30,bg="green")
+entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
+buttons = [
+    '7', '8', '9', '/',
+    '4', '5', '6', '*',
+    '1', '2', '3', '-',
+    '0', '.', '=', '+'
+]
+row = 1
+col = 0
+for button in buttons:
+    btn = tk.Button(window, text=button, fg='black', bg='blue', font=("Arial", 16), height=2, width=8)
+    btn.grid(row=row, column=col, padx=5, pady=5)
+    btn.config(command=lambda num=button: press(num))
+    col += 1
+    if col > 3:
+        col = 0
+        row += 1
+clear_button = tk.Button(window, text='Clear', fg='black', bg='blue', font=("Arial", 16), height=2, width=8, command=clear)
+clear_button.grid(row=row, column=col, padx=5, pady=5)
+equal_button = tk.Button(window, text='=', fg='black', bg='blue', font=("Arial", 16), height=2, width=8, command=equalpress)
+equal_button.grid(row=row+1, column=col, padx=5, pady=5)
 window.mainloop()
